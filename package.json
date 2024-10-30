@@ -1,0 +1,28 @@
+{
+  "name": "@ouosama-hub/discord-client-template",
+  "version": "1.0.0",
+  "main": "app.js",
+  "bin": {
+    "@ouosama-hub/discord-client-template": "index.js"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "cli-color": "^2.0.4",
+    "discord.js": "^14.16.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "eslint": "^9.13.0",
+    "globals": "^15.11.0"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "template"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "A Simple client template"
+}
