@@ -14,11 +14,11 @@ if (fs.existsSync(projectDir)) {
   process.exit(1)
 }
 
-// Helper function to copy only the top-level files and folders from the source directory
-function copyTopLevelFiles(srcDir, destDir) {
+// Helper function to copy files and folders recursively
+function copyFiles(srcDir, destDir) {
   fs.mkdirSync(destDir, { recursive: true })
 
-  fs.readdirSync(srcDir).forEach((file) => {
+  fs.readdirSync(srcDir).forEach(file => {
     const srcPath = path.join(srcDir, file)
     const destPath = path.join(destDir, file)
 
@@ -26,8 +26,8 @@ function copyTopLevelFiles(srcDir, destDir) {
     if (file === 'node_modules') return
 
     if (fs.lstatSync(srcPath).isDirectory()) {
-      // Copy entire directory only once
-      fs.cpSync(srcPath, destPath, { recursive: true })
+      // Recursively copy folders
+      copyFiles(srcPath, destPath)
     } else {
       // Copy individual files
       fs.copyFileSync(srcPath, destPath)
@@ -39,7 +39,7 @@ function copyTopLevelFiles(srcDir, destDir) {
 fs.mkdirSync(projectDir)
 
 // Copy files and folders from the source directory to the new project directory
-copyTopLevelFiles(sourceDir, projectDir)
+copyFiles(sourceDir, projectDir)
 
 // Run npm install in the new project directory
 console.log('Installing dependencies...')
