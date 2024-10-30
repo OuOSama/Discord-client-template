@@ -18,4 +18,4 @@ Welcome to the OuOSama Discord Client Template! This template provides a ready-t
 To get started with the Discord Client Template, run the following command:
 
 ```bash
-npx discord-client-template
+npx @ouosama-hub/discord-client-template
