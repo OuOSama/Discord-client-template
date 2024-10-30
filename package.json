@@ -1,6 +1,6 @@
 {
   "name": "@ouosama-hub/discord-client-template",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "app.js",
   "bin": {
     "discord-client-template": "index.js"
