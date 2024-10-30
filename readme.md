@@ -1,6 +1,6 @@
-# Wee Discord Client Template
+# OuOSama Discord Client Template
 
-Welcome to the Wee Discord Client Template! This template provides a ready-to-use setup for creating a Discord bot with modern features.
+Welcome to the OuOSama Discord Client Template! This template provides a ready-to-use setup for creating a Discord bot with modern features.
 
 ## Features
 
