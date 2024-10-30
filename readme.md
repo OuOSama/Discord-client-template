@@ -15,7 +15,7 @@ Welcome to the OuOSama Discord Client Template! This template provides a ready-t
 
 ## Getting Started
 
-To get started with the Wee Discord Client Template, run the following command:
+To get started with the Discord Client Template, run the following command:
 
 ```bash
 npx @ouosama-hub/discord-client-template
