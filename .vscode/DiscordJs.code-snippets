@@ -1,0 +1,32 @@
+{
+  "Discord.js slash command snippet": {
+    "prefix": "djs-slash-commands",
+    "body": [
+      "const { SlashCommandBuilder } = require('discord.js')",
+      "",
+      "module.exports = {",
+      "  commands: new SlashCommandBuilder()",
+      "    .setName('${1:commands}')",
+      "    .setDescription('Replies with Pong!'),",
+      "  async execute(interaction) {",
+      "    await interaction.reply()",
+      "  },",
+      "}",
+      ""
+    ],
+    "description": "Discord.js slash command snippet"
+  },
+  "Discord.js Config snippet": {
+    "scope": "json",
+    "prefix": "djs-config-json",
+    "body": [
+      "{",
+      "  \"TOKEN\": \"YOUR_TOKEN\",",
+      "  \"CLIENT_ID\": \"YOUR_CLIENT_ID\",",
+      "  \"GUILD_ID\": \"YOUR_GUILD_ID\"",
+      "}",
+      ""
+    ],
+    "description": "Discord.js Config snippet"
+  }
+}

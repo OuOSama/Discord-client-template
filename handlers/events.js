@@ -1,8 +1,6 @@
-// handler/event.js
 const fs = require('fs')
 const path = require('path')
 
-// function getAllEventFiles
 function getAllEventFiles(dir) {
   let files = []
   const items = fs.readdirSync(dir, { withFileTypes: true })
@@ -21,7 +19,6 @@ function getAllEventFiles(dir) {
 module.exports = (client) => {
   const eventPath = path.join(__dirname, '../events')
   const eventFiles = getAllEventFiles(eventPath)
-
   for (const filePath of eventFiles) {
     const event = require(filePath)
     if (event.once) {

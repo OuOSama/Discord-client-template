@@ -1,15 +1,19 @@
-// app.js
+const { Client, GatewayIntentBits, Options } = require('discord.js')
 const { TOKEN } = require('./botconfig/config.json')
-const { Client, GatewayIntentBits } = require('discord.js')
+const { Player } = require('discord-player')
+const { YoutubeiExtractor } = require('discord-player-youtubei')
+
 const client = new Client({
-  intents: Object.values(GatewayIntentBits), // use everything
+  makeCache: Options.cacheWithLimits(Options.DefaultMakeCacheSettings),
+  sweepers: Options.DefaultSweeperSettings,
+  intents: Object.values(GatewayIntentBits),
 })
 
-// use event handler
-require('./handler/events')(client)
+const player = new Player(client)
+player.extractors.register(YoutubeiExtractor, {})
 
-// use commands handler
-require('./handler/commands')(client)
+require('./handlers/events')(client)
+require('./handlers/commands')(client)
+require('./handlers/music')(player)
 
-// login
 client.login(TOKEN)

@@ -1,47 +1,44 @@
-// handler/commands.js
 const fs = require('node:fs')
 const path = require('node:path')
-const { TOKEN, CLIENT_ID, GUILD_ID } = require('../botconfig/config.json') // Make sure you have these in your config
+const {
+  TOKEN,
+  CLIENT_ID,
+  GUILD_ID,
+  DEFAULT_COOLDOWN,
+} = require('../botconfig/config.json')
 const { Collection, Events, REST, Routes } = require('discord.js')
 
 module.exports = (client) => {
   client.commands = new Collection()
-  const foldersPath = path.join(__dirname, '../commands')
-  const commandFolders = fs.readdirSync(foldersPath)
+  client.cooldowns = new Collection()
 
+  const foldersPath = path.join(__dirname, '../commands')
   const commands = []
-  for (const folder of commandFolders) {
-    const commandsPath = path.join(foldersPath, folder)
-    if (fs.statSync(commandsPath).isDirectory()) {
-      const commandFiles = fs
-        .readdirSync(commandsPath)
-        .filter((file) => file.endsWith('.js'))
-      for (const file of commandFiles) {
-        const filePath = path.join(commandsPath, file)
-        const command = require(filePath)
+  const getCommandFiles = (folderPath) => {
+    const folderContent = fs.readdirSync(folderPath)
+
+    for (const item of folderContent) {
+      const itemPath = path.join(folderPath, item)
+
+      if (fs.statSync(itemPath).isDirectory()) {
+        getCommandFiles(itemPath)
+      } else if (item.endsWith('.js')) {
+        const command = require(itemPath)
         if ('commands' in command && 'execute' in command) {
           client.commands.set(command.commands.name, command)
           commands.push(command.commands)
         } else {
           console.log(
-            `[WARNING] The command at ${filePath} is missing a required "commands" or "execute" property.`
+            `[WARNING] The command at ${itemPath} is missing a required "commands" or "execute" property.`
           )
         }
-      }
-    } else if (folder.endsWith('.js')) {
-      const filePath = commandsPath
-      const command = require(filePath)
-      if ('commands' in command && 'execute' in command) {
-        client.commands.set(command.commands.name, command)
-        commands.push(command.commands)
-      } else {
-        console.log(
-          `[WARNING] The command at ${filePath} is missing a required "commands" or "execute" property.`
-        )
       }
     }
   }
 
+  getCommandFiles(foldersPath)
+
+  // Commands
   const rest = new REST().setToken(TOKEN)
 
   client.on(Events.InteractionCreate, async (interaction) => {
@@ -52,6 +49,36 @@ module.exports = (client) => {
       console.error(`No command matching ${interaction.commandName} was found.`)
       return
     }
+
+    // cooldown
+    const { cooldowns } = interaction.client
+    if (!cooldowns.has(command.commands.name)) {
+      cooldowns.set(command.commands.name, new Collection())
+    }
+
+    const now = Date.now()
+    const timestamps = cooldowns.get(command.commands.name)
+    const cooldownAmount = (command.cooldown ?? DEFAULT_COOLDOWN) * 1_000
+
+    if (timestamps.has(interaction.user.id)) {
+      const expirationTime =
+        timestamps.get(interaction.user.id) + cooldownAmount
+
+      if (now < expirationTime) {
+        const timeLeft = (expirationTime - now) / 1_000
+        return interaction.reply({
+          content: `Please wait ${timeLeft.toFixed(
+            1
+          )} more second before reusing the \`${
+            command.commands.name
+          }\` command.`,
+          ephemeral: true,
+        })
+      }
+    }
+
+    timestamps.set(interaction.user.id, now)
+    setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount)
 
     try {
       await command.execute(interaction)
